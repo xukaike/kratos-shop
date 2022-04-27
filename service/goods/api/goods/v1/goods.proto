@@ -1,0 +1,166 @@
+syntax = "proto3";
+
+package goods.v1;
+
+import "google/protobuf/empty.proto";
+import "validate/validate.proto";
+
+option go_package = "goods/api/goods/v1;v1";
+
+// The greeting service definition.
+service Goods {
+  // Sends a greeting
+  rpc CreateCategory (CategoryInfoRequest) returns (CategoryInfoResponse);
+  rpc CreateGoodsType(GoodsTypeRequest) returns(GoodsTypeResponse);
+
+  rpc BrandList(BrandListRequest) returns(BrandListResponse);
+  rpc CreateBrand(BrandRequest) returns(BrandInfoResponse);
+  rpc DeleteBrand(BrandRequest) returns(google.protobuf.Empty);
+  rpc UpdateBrand(BrandRequest) returns(google.protobuf.Empty);
+
+  rpc CreateGoodsSpecification(SpecificationRequest) returns(SpecificationResponse);
+
+  // 商品参数属性分组名
+  rpc CreateAttrGroup(AttrGroupRequest) returns(AttrGroupResponse);
+  // 商品参数属性名和值
+  rpc CreateAttrValue(AttrValueRequest) returns(AttrResponse);
+}
+
+message CategoryInfoRequest {
+  int32 id = 1;
+  string name = 2;
+  int32 parentCategory = 3;
+  int32 level = 4;
+  bool isTab = 5;
+  int32 sort = 6;
+}
+
+message CategoryInfoResponse {
+  int32 id = 1;
+  string name = 2;
+  int32 parentCategory = 3;
+  int32 level = 4;
+  bool isTab = 5;
+  int32 sort =6;
+}
+
+message GoodsTypeRequest {
+  int64 id = 1;
+  string name = 2 [(validate.rules).string.min_len = 3];
+  string typeCode = 3 [(validate.rules).string.min_len = 4];
+  string nameAlias = 4;
+  bool isVirtual = 5;
+  string desc = 6;
+  int32 sort = 7;
+  string brandIds = 8 [(validate.rules).string.min_len = 1];
+}
+
+message GoodsTypeResponse {
+  int64 id = 1;
+}
+
+
+message BrandListRequest {
+  int32 pages = 1;
+  int32 pagePerNums = 2;
+}
+
+message BrandRequest {
+  int32 id = 1;
+  string name = 2;
+  string logo = 3;
+  string desc = 4;
+  bool isTab = 5;
+  int32 sort = 6;
+}
+
+message BrandInfoResponse {
+  int32 id = 1;
+  string name = 2;
+  string logo = 3;
+  string desc = 4;
+  bool isTab = 5;
+  int32 sort = 6;
+}
+
+message BrandListResponse {
+  int32 total = 1;
+  repeated BrandInfoResponse data = 2;
+}
+
+message SpecificationValue {
+  int64 id = 1;
+  int64 attrId = 2;
+  string value = 3 [(validate.rules).string.min_len = 3];
+  int32 sort = 4 [(validate.rules).int32.gt = 1];
+}
+
+message SpecificationRequest {
+  int64 id = 1;
+  int64 typeId = 2 [(validate.rules).int64.gt = 1];
+  string name = 3 [(validate.rules).string.min_len = 2];
+  int32 sort = 4 [(validate.rules).int32.gt = 1];
+  bool status = 5;
+  bool isSku = 6;
+  bool isSelect = 7;
+  repeated SpecificationValue specificationValue = 8;
+}
+
+message SpecificationResponse {
+  int64 id = 1;
+}
+
+message AttrGroupRequest {
+  int64 id = 1;
+  int64 typeId = 2 [(validate.rules).int64.gte = 1];
+  string title = 3 [(validate.rules).string.min_len = 3];
+  string  desc = 4;
+  bool status = 5;
+  int32 sort = 6 [(validate.rules).int32.gte = 1];
+}
+
+message AttrGroupResponse {
+  int64 id = 1;
+  int64 typeId = 2;
+  string title = 3;
+  string  desc = 4;
+  bool status = 5;
+  int32 sort = 6;
+}
+
+
+message AttrValueRequest {
+  int64 id = 1;
+  int64 attrId = 2;
+  int64 groupId = 3 [(validate.rules).int64.gte = 1];
+  string value = 4 [(validate.rules).string.min_len = 3];
+}
+
+message AttrRequest {
+  int64 id = 1;
+  int64 typeId = 2 [(validate.rules).int64.gte = 1];
+  int64 groupId = 3 [(validate.rules).int64.gte = 1];
+  string title = 4 [(validate.rules).string = {min_len: 1}];
+  string  desc = 5;
+  bool status = 6;
+  int32 sort = 7 [(validate.rules).int32.gte = 1];
+  repeated AttrValueRequest attrValue = 8;
+}
+
+message AttrValueResponse {
+  int64 id = 1;
+  int64 attrId = 2;
+  int64 groupId = 3;
+  string value = 4;
+}
+
+message AttrResponse {
+  int64 id = 1;
+  int64 typeId = 2;
+  int64 groupId = 3;
+  string title = 4;
+  string  desc = 5;
+  bool status = 6;
+  int32 sort = 7;
+  repeated AttrValueResponse attrValue = 8;
+}

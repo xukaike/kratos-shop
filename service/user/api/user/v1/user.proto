@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+package api.user.v1;
+
+import "google/protobuf/empty.proto";
+
+option go_package = "user/api/user/v1;v1";
+
+service User {
+	rpc CreateUser (CreateUserInfo) returns (UserInfoResponse){};
+	rpc GetUserList(PageInfo) returns (UserListResponse){};
+	rpc GetUserByMobile(MobileRequest) returns (UserInfoResponse){};
+	rpc UpdateUser(UpdateUserInfo) returns (google.protobuf.Empty){};
+	rpc CheckPassword(PasswordCheckInfo) returns (CheckResponse){};
+	rpc GetUserById(IdRequest) returns (UserInfoResponse){}
+}
+
+message CreateUserInfo {
+	string nickName = 1;
+	string password = 2;
+	string mobile = 3;
+}
+
+message UserInfoResponse {
+	int64 id = 1;
+	string password = 2;
+	string mobile = 3;
+	string nickName = 4;
+	int64 birthday = 5;
+	string gender = 6;
+	int32 role = 7;
+}
+
+message UserListResponse {
+	int32 total = 1;
+	repeated UserInfoResponse data = 2;
+}
+
+message PageInfo{
+	uint32 pn = 1;
+	uint32 pSize = 2;
+}
+
+message MobileRequest{
+	string mobile = 1;
+}
+
+message IdRequest{
+	int64 id = 1;
+}
+
+message UpdateUserInfo{
+	int64 id = 1;
+	string nickName = 2;
+	string gender = 3;
+	uint64 birthday = 4;
+}
+
+message PasswordCheckInfo{
+	string password = 1;
+	string encryptedPassword = 2;
+}
+
+message CheckResponse{
+	bool success = 1;
+}
+
